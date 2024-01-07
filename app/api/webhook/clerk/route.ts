@@ -57,7 +57,6 @@ export async function POST(req: Request) {
     //store it into out DB
 
     if (evt.type === 'user.created') {
-        console.log("inside webhook user.created");
         const { id, email_addresses, username, first_name, last_name, image_url } = evt.data;
         const user = {
             clerkId: id,
@@ -69,9 +68,6 @@ export async function POST(req: Request) {
         };
 
         const newUser = await createUser(user);
-        console.log('after user creation');
-        console.log(newUser);
-
         if (newUser) {
             await clerkClient.users.updateUserMetadata(id, {
                 publicMetadata: {
@@ -84,7 +80,6 @@ export async function POST(req: Request) {
     }
 
     if (eventType === 'user.updated'){
-        console.log("inside webhook user.updated");
         const {id, image_url, first_name, last_name, username} = evt.data;
 
         const updates: UpdateUserParams = {
@@ -95,9 +90,6 @@ export async function POST(req: Request) {
         }
 
         const updatedUser = await updateUser(id, updates);
-        console.log('after user update');
-        console.log(updatedUser);
-
         return NextResponse.json({message: 'OK', user: updatedUser});
 
     }
