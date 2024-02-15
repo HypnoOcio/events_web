@@ -1,5 +1,5 @@
 "use client"
-import React, { Component } from 'react';
+import React, { Component, useState } from 'react';
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FieldValue, FieldValues, useForm } from "react-hook-form";
 import * as z from "zod";
@@ -10,6 +10,8 @@ import { eventFormSchema } from '@/lib/validators';
 import { eventDefaultValues } from '@/constants';
 import Dropdown from './Dropdown';
 import { Textarea } from "@/components/ui/textarea"
+// import FileUploader from '../../FileUploader';
+import { UploadButton } from "@/lib/uploadthing";
 
 export type EventFormProp = {
   userID: string;
@@ -17,6 +19,8 @@ export type EventFormProp = {
 };
 
 const EventForm = ({ userID, type }: EventFormProp) => {
+  const [files, setFiles] = useState<File[]>([]);
+
   const initialValues = eventDefaultValues;
   const form = useForm<z.infer<typeof eventFormSchema>>({
     resolver: zodResolver(eventFormSchema),
@@ -30,7 +34,8 @@ const EventForm = ({ userID, type }: EventFormProp) => {
   }
 
   return (
-    <Form {...form}>
+  <>
+  <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-5">
         <div className='flex flex-col gap-5 md:flex-row'>
           <FormField
@@ -71,11 +76,42 @@ const EventForm = ({ userID, type }: EventFormProp) => {
               </FormItem>
             )}
           />
+          <FormField
+            control={form.control}
+            name='imageUrl'
+            render={({ field }) => (
+              <FormItem className='w-full'>
+                <FormControl className='h-72'>
+                  {/* <FileUploader onFieldChange={field.onChange}
+                    imageUrl={field.value}
+                    satFiles={setFiles}/> */}
+                  
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
         </div>
 
         <Button type="submit">Submit</Button>
       </form>
     </Form>
+    <div className="flex min-h-screen flex-col items-center justify-between p-24">
+      <UploadButton
+        endpoint="imageUploader"
+        onClientUploadComplete={(res) => {
+          // Do something with the response
+          console.log("Files: ", res);
+          alert("Upload Completed");
+        }}
+        onUploadError={(error: Error) => {
+          // Do something with the error.
+          alert(`ERROR! ${error.message}`);
+        }}
+      />
+    </div>
+  </>
+    
   );
 };
 

@@ -3,6 +3,11 @@ import { Poppins } from 'next/font/google'
 import { ClerkProvider } from '@clerk/nextjs'
 import './globals.css'
 
+import { NextSSRPlugin } from "@uploadthing/react/next-ssr-plugin";
+import { extractRouterConfig } from "uploadthing/server";
+ 
+import { ourFileRouter } from "@/app/api/uploadthing/core";
+
 const poppins = Poppins({
   subsets: ['latin'],
   weight: ['400', '500', '600', '700'],
@@ -24,6 +29,7 @@ export default function RootLayout({
 }) {
   return (
     <ClerkProvider>
+      <NextSSRPlugin routerConfig={extractRouterConfig(ourFileRouter)}/>
       <html lang="en">
         <body className={poppins.variable}>{children}</body>
       </html>
