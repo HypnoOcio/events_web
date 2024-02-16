@@ -11,7 +11,9 @@ import { eventDefaultValues } from '@/constants';
 import Dropdown from './Dropdown';
 import { Textarea } from "@/components/ui/textarea"
 // import FileUploader from '../../FileUploader';
-import { UploadButton } from "@/lib/uploadthing";
+import { FileUploader } from './FileUploader';
+import { UploadButton, UploadDropzone } from "@/lib/uploadthing";
+import { OurFileRouter } from "@/app/api/uploadthing/core";
 
 export type EventFormProp = {
   userID: string;
@@ -34,85 +36,84 @@ const EventForm = ({ userID, type }: EventFormProp) => {
   }
 
   return (
-  <>
-  <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-5">
-        <div className='flex flex-col gap-5 md:flex-row'>
-          <FormField
-            control={form.control}
-            name="title"
-            render={({ field }) => (
-              <FormItem className='w-full'>
-                <FormControl>
-                  <Input placeholder="Event title" {...field} className='input-field' />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="categoryId"
-            render={({ field }) => (
-              <FormItem className='w-full'>
-                <FormControl>
-                  <Dropdown onChangeHandler={field.onChange} value={field.value} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-        <div className='flex flex-col gap-5 md:flex-row'>
-          <FormField
-            control={form.control}
-            name='description'
-            render={({ field }) => (
-              <FormItem className='w-full'>
-                <FormControl className='h-72'>
-                  <Textarea placeholder='Description' {...field} className='textarea rounded-2xl'/>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name='imageUrl'
-            render={({ field }) => (
-              <FormItem className='w-full'>
-                <FormControl className='h-72'>
-                  {/* <FileUploader onFieldChange={field.onChange}
-                    imageUrl={field.value}
-                    satFiles={setFiles}/> */}
-                  
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-
-        <Button type="submit">Submit</Button>
-      </form>
-    </Form>
-    <div className="flex min-h-screen flex-col items-center justify-between p-24">
-      <UploadButton
-        endpoint="imageUploader"
-        onClientUploadComplete={(res) => {
-          // Do something with the response
-          console.log("Files: ", res);
-          alert("Upload Completed");
-        }}
-        onUploadError={(error: Error) => {
-          // Do something with the error.
-          alert(`ERROR! ${error.message}`);
-        }}
-      />
-    </div>
-  </>
-    
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-5">
+          <div className='flex flex-col gap-5 md:flex-row'>
+            <FormField
+              control={form.control}
+              name="title"
+              render={({ field }) => (
+                <FormItem className='w-full'>
+                  <FormControl>
+                    <Input placeholder="Event title" {...field} className='input-field' />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="categoryId"
+              render={({ field }) => (
+                <FormItem className='w-full'>
+                  <FormControl>
+                    <Dropdown onChangeHandler={field.onChange} value={field.value} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+          <div className='flex flex-col gap-5 md:flex-row'>
+            <FormField
+              control={form.control}
+              name='description'
+              render={({ field }) => (
+                <FormItem className='w-full'>
+                  <FormControl className='h-72'>
+                    <Textarea placeholder='Description' {...field} className='textarea rounded-2xl' />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name='imageUrl'
+              render={({ field }) => (
+                <FormItem className='w-full'>
+                  <FormControl className='h-72'>
+                    <FileUploader
+                      imageUrl={field.value}
+                      onFieldChange={field.onFieldChange}
+                      setFiles={setFiles} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+          <Button type="submit">Submit</Button>
+        </form>
+      </Form>
   );
 };
-
 export default EventForm;
+
+/* <div className="flex min-h-screen flex-col items-center justify-between p-24">
+        <UploadDropzone
+          endpoint="imageUploader"
+          onClientUploadComplete={(res) => {
+            // Do something with the response
+            console.log("Files: ", res);
+            alert("Upload Completed");
+          }}
+          onUploadError={(error: Error) => {
+            alert(`ERROR! ${error.message}`);
+          }}
+          onUploadBegin={(name) => {
+            // Do something once upload begins
+            console.log("Uploading: ", name);
+          }}
+        />
+      </div> */
